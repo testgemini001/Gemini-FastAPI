@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: gemini-fastapi
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter  # 可选择 starter, standard, pro
+    region: oregon  # 或 singapore, frankfurt 等
+    branch: main
+    healthCheckPath: /health
+    envVars:
+      - key: CONFIG_SERVER__HOST
+        value: "0.0.0.0"
+      - key: CONFIG_SERVER__PORT
+        value: "8000"
+      - key: CONFIG_SERVER__API_KEY
+        sync: false  # 在 Render 控制台中手动设置
+      - key: CONFIG_GEMINI__CLIENTS__0__ID
+        value: "client-a"
+      - key: CONFIG_GEMINI__CLIENTS__0__SECURE_1PSID
+        sync: false  # 敏感信息，在控制台设置
+      - key: CONFIG_GEMINI__CLIENTS__0__SECURE_1PSIDTS
+        sync: false  # 敏感信息，在控制台设置
+      - key: CONFIG_GEMINI__CLIENTS__1__ID
+        value: "client-b"
+      - key: CONFIG_GEMINI__CLIENTS__1__SECURE_1PSID
+        sync: false
+      - key: CONFIG_GEMINI__CLIENTS__1__SECURE_1PSIDTS
+        sync: false
+      - key: CONFIG_GEMINI__TIMEOUT
+        value: "60"
+      - key: CONFIG_GEMINI__AUTO_REFRESH
+        value: "true"
+      - key: CONFIG_STORAGE__PATH
+        value: "/opt/render/project/src/data/lmdb"
+      - key: CONFIG_STORAGE__MAX_SIZE
+        value: "134217728"  # 128MB
+      - key: CONFIG_LOGGING__LEVEL
+        value: "INFO"
+
+  # 可选：添加数据库服务（如果需要更强的持久化）
+  # - type: redis
+  #   name: gemini-cache
+  #   plan: starter
+  #   maxmemoryPolicy: allkeys-lru 

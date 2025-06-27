@@ -1,0 +1,31 @@
+app = "gemini-fastapi"
+primary_region = "nrt"  # 或 "sin" for Singapore
+
+[build]
+dockerfile = "Dockerfile.render"
+
+[env]
+CONFIG_SERVER__HOST = "0.0.0.0"
+CONFIG_SERVER__PORT = "8000"
+CONFIG_GEMINI__TIMEOUT = "60"
+CONFIG_GEMINI__AUTO_REFRESH = "true"
+CONFIG_STORAGE__MAX_SIZE = "134217728"
+CONFIG_LOGGING__LEVEL = "INFO"
+
+[http_service]
+internal_port = 8000
+force_https = true
+auto_stop_machines = false
+auto_start_machines = true
+min_machines_running = 1
+
+[[http_service.checks]]
+grace_period = "10s"
+interval = "30s"
+method = "GET"
+timeout = "5s"
+path = "/health"
+
+[mounts]
+source = "gemini_data"
+destination = "/app/data" 

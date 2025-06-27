@@ -1,0 +1,35 @@
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+
+LABEL org.opencontainers.image.description="Web-based Gemini models wrapped into an OpenAI-compatible API."
+
+WORKDIR /app
+
+# 安装curl用于健康检查
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+# 创建数据目录
+RUN mkdir -p data/lmdb
+
+# 设置环境变量
+ENV PYTHONUNBUFFERED=1
+ENV CONFIG_SERVER__HOST=0.0.0.0
+ENV CONFIG_SERVER__PORT=8000
+
+# Install dependencies
+COPY pyproject.toml .
+RUN uv sync --no-cache --no-dev
+
+# Copy application code
+COPY app/ app/
+COPY config/ config/
+COPY run.py .
+
+# 暴露端口
+EXPOSE 8000
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
+
+# Command to run the application
+CMD ["uv", "run", "python", "run.py"] 
