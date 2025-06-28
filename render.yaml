@@ -14,18 +14,11 @@ services:
         value: "8000"
       - key: CONFIG_SERVER__API_KEY
         sync: false  # 在 Render 控制台中手动设置
-      - key: CONFIG_GEMINI__CLIENTS__0__ID
-        value: "client-a"
-      - key: CONFIG_GEMINI__CLIENTS__0__SECURE_1PSID
-        sync: false  # 敏感信息，在控制台设置
-      - key: CONFIG_GEMINI__CLIENTS__0__SECURE_1PSIDTS
-        sync: false  # 敏感信息，在控制台设置
-      - key: CONFIG_GEMINI__CLIENTS__1__ID
-        value: "client-b"
-      - key: CONFIG_GEMINI__CLIENTS__1__SECURE_1PSID
-        sync: false
-      - key: CONFIG_GEMINI__CLIENTS__1__SECURE_1PSIDTS
-        sync: false
+      # Gemini客户端配置 - 可以在Render控制台中动态添加任意数量的客户端
+      # 格式: CONFIG_GEMINI__CLIENTS__[索引]__[字段名]
+      # 示例: CONFIG_GEMINI__CLIENTS__0__ID, CONFIG_GEMINI__CLIENTS__0__SECURE_1PSID 等
+      # 注意：这里不需要预先定义，可以直接在Render控制台的Environment页面添加
+      # 其他配置
       - key: CONFIG_GEMINI__TIMEOUT
         value: "60"
       - key: CONFIG_GEMINI__AUTO_REFRESH

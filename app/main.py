@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from loguru import logger
 
 from .server.chat import router as chat_router
@@ -30,6 +31,23 @@ def create_app() -> FastAPI:
         version="1.0.0",
         lifespan=lifespan,
     )
+
+    # 添加根路径端点
+    @app.get("/")
+    async def root():
+        return JSONResponse({
+            "message": "Gemini FastAPI Server",
+            "description": "OpenAI-compatible API for Gemini Web",
+            "version": "1.0.0",
+            "endpoints": {
+                "health": "/health",
+                "models": "/v1/models",
+                "chat": "/v1/chat/completions",
+                "docs": "/docs",
+                "openapi": "/openapi.json"
+            },
+            "status": "running"
+        })
 
     add_cors_middleware(app)
     add_exception_handler(app)
